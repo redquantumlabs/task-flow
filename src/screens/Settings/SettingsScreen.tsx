@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, List, Divider, useTheme, Switch } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -7,7 +7,6 @@ import { useTasks } from '../../context/TaskContext';
 import CustomButton from '../../components/CustomButton';
 
 const SettingsScreen = () => {
-  const { clearAllTasks } = useTasks();
   const theme = useTheme();
 
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
@@ -25,21 +24,6 @@ const SettingsScreen = () => {
     await AsyncStorage.setItem('pushNotifications', value.toString());
   };
 
-  const handleClearData = () => {
-    Alert.alert(
-      "Clear All Data",
-      "Are you sure you want to delete all tasks? This cannot be undone.",
-      [
-        { text: "Cancel", style: "cancel" },
-        { 
-          text: "Delete All", 
-          style: "destructive",
-          onPress: () => clearAllTasks() 
-        }
-      ]
-    );
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -51,54 +35,32 @@ const SettingsScreen = () => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
         <List.Section style={styles.section}>
-        <List.Subheader>Preferences</List.Subheader>
-        <List.Item
-          title="Push Notifications"
-          description="Receive reminders for due tasks"
-          left={(props) => <List.Icon {...props} icon="bell-outline" />}
-          right={() => (
-            <Switch 
-              value={isNotificationsEnabled} 
-              onValueChange={toggleNotifications} 
-              color={theme.colors.primary}
-            />
-          )}
-        />
-      </List.Section>
+          <List.Subheader>Preferences</List.Subheader>
+          <List.Item
+            title="Push Notifications"
+            description="Receive reminders for due tasks"
+            left={(props) => <List.Icon {...props} icon="bell-outline" />}
+            right={() => (
+              <Switch
+                value={isNotificationsEnabled}
+                onValueChange={toggleNotifications}
+                color={theme.colors.primary}
+              />
+            )}
+          />
+        </List.Section>
 
-      <Divider />
+        <Divider />
 
-      <List.Section style={styles.section}>
-        <List.Subheader>About</List.Subheader>
-        <List.Item
-          title="Version"
-          description="1.0.0 (Build 1)"
-          left={(props) => <List.Icon {...props} icon="information-outline" />}
-        />
-        <List.Item
-          title="Developer"
-          description="Antigravity IDE & React Native"
-          left={(props) => <List.Icon {...props} icon="code-tags" />}
-        />
-      </List.Section>
+        <List.Section style={styles.section}>
+          <List.Subheader>About</List.Subheader>
+          <List.Item
+            title="Version"
+            description="1.0.0"
+            left={(props) => <List.Icon {...props} icon="information-outline" />}
+          />
+        </List.Section>
 
-      <Divider />
-
-      <View style={styles.dangerZone}>
-        <Text variant="titleMedium" style={{ color: theme.colors.error, marginBottom: 8 }}>
-          Danger Zone
-        </Text>
-        <Text variant="bodyMedium" style={{ color: 'gray', marginBottom: 16 }}>
-          Wiping data will permanently delete all your tasks from this device.
-        </Text>
-        <CustomButton
-          title="Wipe All Data"
-          icon="delete-alert"
-          mode="contained"
-          buttonColor={theme.colors.error}
-          onPress={handleClearData}
-        />
-        </View>
       </ScrollView>
     </View>
   );
@@ -130,10 +92,6 @@ const styles = StyleSheet.create({
   },
   section: {
     backgroundColor: '#ffffff',
-  },
-  dangerZone: {
-    padding: 16,
-    marginTop: 16,
   },
 });
 
