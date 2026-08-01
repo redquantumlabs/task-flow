@@ -4,6 +4,7 @@ import { Provider as PaperProvider, MD3LightTheme as DefaultTheme } from 'react-
 import { SafeAreaProvider } from 'react-native-safe-area-context';
 
 import RootNavigator from './src/navigation/RootNavigator';
+import { TaskProvider } from './src/context/TaskContext';
 
 const theme = {
   ...DefaultTheme,
@@ -18,9 +19,11 @@ const App = () => {
   return (
     <SafeAreaProvider>
       <PaperProvider theme={theme}>
-        <NavigationContainer>
-          <RootNavigator />
-        </NavigationContainer>
+        <TaskProvider>
+          <NavigationContainer>
+            <RootNavigator />
+          </NavigationContainer>
+        </TaskProvider>
       </PaperProvider>
     </SafeAreaProvider>
   );

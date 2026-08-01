@@ -8,7 +8,6 @@ export type BottomTabParamList = {
 };
 
 export type RootStackParamList = {
-  Splash: undefined;
   MainTabs: NavigatorScreenParams<BottomTabParamList>;
   AddEditTask: { taskId?: string };
   TaskDetails: { taskId: string };
