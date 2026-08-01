@@ -28,12 +28,16 @@ const SettingsScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Text variant="headlineMedium" style={styles.header}>
-        Settings
-      </Text>
+    <View style={styles.container}>
+      <View style={styles.headerContainer}>
+        <Text variant="headlineMedium" style={styles.header}>
+          ⚙️ Settings
+        </Text>
+      </View>
+      <View style={styles.divider} />
 
-      <List.Section style={styles.section}>
+      <ScrollView showsVerticalScrollIndicator={false}>
+        <List.Section style={styles.section}>
         <List.Subheader>Preferences</List.Subheader>
         <List.Item
           title="Push Notifications"
@@ -81,19 +85,34 @@ const SettingsScreen = () => {
           buttonColor={theme.colors.error}
           onPress={handleClearData}
         />
-      </View>
-    </ScrollView>
+        </View>
+      </ScrollView>
+    </View>
   );
 };
 
 const styles = StyleSheet.create({
   container: {
     flex: 1,
+    backgroundColor: '#f5f5f5',
+  },
+  headerContainer: {
     backgroundColor: '#ffffff',
+    paddingHorizontal: 16,
+    paddingTop: 16,
+    paddingBottom: 12,
   },
   header: {
     fontWeight: 'bold',
-    margin: 16,
+  },
+  divider: {
+    height: 1,
+    backgroundColor: '#e0e0e0',
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 2,
+    elevation: 2,
     marginBottom: 8,
   },
   section: {

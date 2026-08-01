@@ -3,7 +3,6 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTheme } from 'react-native-paper';
 
-import HomeScreen from '../screens/Home/HomeScreen';
 import TasksScreen from '../screens/Tasks/TasksScreen';
 import StatisticsScreen from '../screens/Statistics/StatisticsScreen';
 import SettingsScreen from '../screens/Settings/SettingsScreen';
@@ -20,9 +19,7 @@ const BottomTabs = () => {
         tabBarIcon: ({ focused, color, size }) => {
           let iconName = 'help';
 
-          if (route.name === 'Home') {
-            iconName = focused ? 'home' : 'home-outline';
-          } else if (route.name === 'Tasks') {
+          if (route.name === 'Tasks') {
             iconName = focused ? 'format-list-checks' : 'format-list-checks';
           } else if (route.name === 'Statistics') {
             iconName = focused ? 'chart-bar' : 'chart-bar';
@@ -34,10 +31,9 @@ const BottomTabs = () => {
         },
         tabBarActiveTintColor: theme.colors.primary,
         tabBarInactiveTintColor: 'gray',
-        headerShown: true,
+        headerShown: false,
       })}
     >
-      <Tab.Screen name="Home" component={HomeScreen} />
       <Tab.Screen name="Tasks" component={TasksScreen} />
       <Tab.Screen name="Statistics" component={StatisticsScreen} />
       <Tab.Screen name="Settings" component={SettingsScreen} />

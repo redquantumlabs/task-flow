@@ -9,6 +9,7 @@ interface TaskContextType {
   updateTask: (id: string, updatedFields: Partial<Task>) => void;
   deleteTask: (id: string) => void;
   toggleTaskCompletion: (id: string) => void;
+  toggleSubtaskCompletion: (taskId: string, subtaskId: string) => void;
   clearAllTasks: () => void;
   isLoading: boolean;
 }
@@ -79,12 +80,46 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       prevTasks.map((task) => {
         if (task.id === id) {
           const isCompleted = !task.isCompleted;
+          
+          let updatedSubtasks = task.subtasks;
+          if (updatedSubtasks) {
+            updatedSubtasks = updatedSubtasks.map(s => ({ ...s, completed: isCompleted }));
+          }
+
           if (isCompleted) {
             cancelTaskReminder(id);
           } else if (task.dueDate) {
             scheduleTaskReminder(id, task.title, task.dueDate);
           }
-          return { ...task, isCompleted, updatedAt: new Date() };
+          return { ...task, isCompleted, subtasks: updatedSubtasks, updatedAt: new Date() };
+        }
+        return task;
+      })
+    );
+  };
+
+  const toggleSubtaskCompletion = (taskId: string, subtaskId: string) => {
+    setTasks((prevTasks) =>
+      prevTasks.map((task) => {
+        if (task.id === taskId && task.subtasks) {
+          const updatedSubtasks = task.subtasks.map(s =>
+            s.id === subtaskId ? { ...s, completed: !s.completed } : s
+          );
+          
+          const allSubtasksCompleted = updatedSubtasks.length > 0 && updatedSubtasks.every(s => s.completed);
+
+          if (allSubtasksCompleted && !task.isCompleted) {
+            cancelTaskReminder(taskId);
+          } else if (!allSubtasksCompleted && task.isCompleted && task.dueDate) {
+            scheduleTaskReminder(taskId, task.title, task.dueDate);
+          }
+
+          return {
+            ...task,
+            subtasks: updatedSubtasks,
+            isCompleted: allSubtasksCompleted,
+            updatedAt: new Date()
+          };
         }
         return task;
       })
@@ -103,6 +138,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         updateTask,
         deleteTask,
         toggleTaskCompletion,
+        toggleSubtaskCompletion,
         clearAllTasks,
         isLoading,
       }}
