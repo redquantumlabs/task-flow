@@ -24,7 +24,7 @@ class AppDelegate: UIResponder, UIApplicationDelegate {
     window = UIWindow(frame: UIScreen.main.bounds)
 
     factory.startReactNative(
-      withModuleName: "TaskFlow",
+      withModuleName: "Task Flow",
       in: window,
       launchOptions: launchOptions
     )
