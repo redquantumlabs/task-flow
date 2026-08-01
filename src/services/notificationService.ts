@@ -1,4 +1,4 @@
-import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
+import notifee, { TimestampTrigger, TriggerType, AndroidImportance } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const requestNotificationPermission = async () => {
@@ -11,11 +11,12 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
     return; // User disabled notifications in settings
   }
 
-  // Create a channel (required for Android)
+  // Create a new channel (Android caches channel properties, so we must change the ID to apply new sound/importance settings)
   const channelId = await notifee.createChannel({
-    id: 'task-reminders',
+    id: 'task-reminders-v2',
     name: 'Task Reminders',
     sound: 'default',
+    importance: AndroidImportance.HIGH,
   });
 
   // Schedule notification exactly at due date

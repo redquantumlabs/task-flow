@@ -1,4 +1,4 @@
-import { RewardedAd, RewardedAdEventType, TestIds, AdEventType } from 'react-native-google-mobile-ads';
+import mobileAds, { RewardedAd, RewardedAdEventType, TestIds, AdEventType } from 'react-native-google-mobile-ads';
 
 // Use test ID during development. In production, replace with your actual AdMob Rewarded Ad Unit ID.
 const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyy';
@@ -6,7 +6,10 @@ const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyy
 let rewardedAd: RewardedAd | null = null;
 let adLoaded = false;
 
-export const loadRewardedAd = () => {
+export const loadRewardedAd = async () => {
+  // Ensure the SDK is initialized before attempting to load ads
+  await mobileAds().initialize();
+
   adLoaded = false;
   rewardedAd = RewardedAd.createForAdRequest(adUnitId, {
     keywords: ['productivity', 'tasks'],
@@ -18,6 +21,10 @@ export const loadRewardedAd = () => {
 
   rewardedAd.addAdEventListener(RewardedAdEventType.EARNED_REWARD, reward => {
     console.log('User earned reward of ', reward);
+  });
+
+  rewardedAd.addAdEventListener(AdEventType.ERROR, (error) => {
+    console.error('Ad failed to load: ', error);
   });
 
   rewardedAd.load();
