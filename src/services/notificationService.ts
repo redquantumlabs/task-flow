@@ -1,21 +1,26 @@
 import notifee, { TimestampTrigger, TriggerType } from '@notifee/react-native';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const requestNotificationPermission = async () => {
   await notifee.requestPermission();
 };
 
 export const scheduleTaskReminder = async (taskId: string, title: string, dueDate: Date) => {
+  const notificationsSetting = await AsyncStorage.getItem('pushNotifications');
+  if (notificationsSetting === 'false') {
+    return; // User disabled notifications in settings
+  }
+
   // Create a channel (required for Android)
   const channelId = await notifee.createChannel({
     id: 'task-reminders',
     name: 'Task Reminders',
   });
 
-  // Schedule notification 1 hour before due date (for demonstration)
-  // In a real app, you might want this configurable.
-  const reminderTime = new Date(dueDate.getTime() - 60 * 60 * 1000);
+  // Schedule notification exactly at due date
+  const reminderTime = new Date(dueDate.getTime());
 
-  // If the due date is in the past or within an hour, we can't schedule it in the past.
+  // If the due date is in the past, we can't schedule it.
   if (reminderTime.getTime() <= Date.now()) {
     return;
   }
@@ -28,8 +33,8 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
   await notifee.createTriggerNotification(
     {
       id: taskId,
-      title: 'Task Reminder',
-      body: `Your task "${title}" is due in 1 hour!`,
+      title: 'Task Due!',
+      body: `Your task "${title}" is due now!`,
       android: {
         channelId,
         pressAction: {

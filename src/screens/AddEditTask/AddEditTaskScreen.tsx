@@ -1,9 +1,11 @@
 import React, { useState, useEffect } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { SegmentedButtons, Text, useTheme, IconButton } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, TouchableOpacity, Platform } from 'react-native';
+import { SegmentedButtons, Text, useTheme, IconButton, Button } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import 'react-native-get-random-values';
 import { v4 as uuidv4 } from 'uuid';
+import DateTimePicker from '@react-native-community/datetimepicker';
+import { format } from 'date-fns';
 
 import { useTasks } from '../../context/TaskContext';
 import { RootStackParamList } from '../../navigation/types';
@@ -30,6 +32,11 @@ const AddEditTaskScreen = () => {
   const [newSubtaskTitle, setNewSubtaskTitle] = useState('');
   const [error, setError] = useState('');
 
+  // Date and Time Picker State
+  const [dueDate, setDueDate] = useState<Date>(new Date());
+  const [showDatePicker, setShowDatePicker] = useState(false);
+  const [showTimePicker, setShowTimePicker] = useState(false);
+
   useEffect(() => {
     if (isEditing) {
       const existingTask = tasks.find((t) => t.id === taskId);
@@ -39,6 +46,9 @@ const AddEditTaskScreen = () => {
         setCategory(existingTask.category || '');
         setPriority(existingTask.priority);
         setSubtasks(existingTask.subtasks || []);
+        if (existingTask.dueDate) {
+          setDueDate(new Date(existingTask.dueDate));
+        }
       }
     }
   }, [taskId, isEditing, tasks]);
@@ -58,6 +68,24 @@ const AddEditTaskScreen = () => {
     setSubtasks(subtasks.filter(s => s.id !== id));
   };
 
+  const handleDateChange = (event: any, selectedDate?: Date) => {
+    setShowDatePicker(false);
+    if (selectedDate) {
+      const currentDate = new Date(dueDate);
+      currentDate.setFullYear(selectedDate.getFullYear(), selectedDate.getMonth(), selectedDate.getDate());
+      setDueDate(currentDate);
+    }
+  };
+
+  const handleTimeChange = (event: any, selectedTime?: Date) => {
+    setShowTimePicker(false);
+    if (selectedTime) {
+      const currentDate = new Date(dueDate);
+      currentDate.setHours(selectedTime.getHours(), selectedTime.getMinutes(), 0, 0);
+      setDueDate(currentDate);
+    }
+  };
+
   const handleSave = () => {
     if (!title.trim()) {
       setError('Title is required');
@@ -73,6 +101,7 @@ const AddEditTaskScreen = () => {
         category: categoryToSave,
         priority,
         subtasks,
+        dueDate,
       });
     } else {
       addTask({
@@ -82,7 +111,7 @@ const AddEditTaskScreen = () => {
         priority,
         subtasks,
         isCompleted: false,
-        dueDate: new Date(), // Just defaulting to today for now
+        dueDate,
       });
     }
 
@@ -117,6 +146,47 @@ const AddEditTaskScreen = () => {
         onChangeText={setCategory}
         placeholder="e.g., Work, Personal, Shopping"
       />
+
+      <Text variant="titleMedium" style={styles.sectionTitle}>
+        Due Date & Time
+      </Text>
+
+      <View style={styles.dateTimeContainer}>
+        <Button 
+          mode="outlined" 
+          icon="calendar" 
+          onPress={() => setShowDatePicker(true)}
+          style={styles.dateTimeButton}
+        >
+          {format(dueDate, 'MMM dd, yyyy')}
+        </Button>
+        <Button 
+          mode="outlined" 
+          icon="clock-outline" 
+          onPress={() => setShowTimePicker(true)}
+          style={styles.dateTimeButton}
+        >
+          {format(dueDate, 'hh:mm a')}
+        </Button>
+      </View>
+
+      {showDatePicker && (
+        <DateTimePicker
+          value={dueDate}
+          mode="date"
+          display="default"
+          onChange={handleDateChange}
+        />
+      )}
+
+      {showTimePicker && (
+        <DateTimePicker
+          value={dueDate}
+          mode="time"
+          display="default"
+          onChange={handleTimeChange}
+        />
+      )}
 
       <Text variant="titleMedium" style={styles.sectionTitle}>
         Subtasks
@@ -198,6 +268,15 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
     fontWeight: 'bold',
+  },
+  dateTimeContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+  },
+  dateTimeButton: {
+    flex: 1,
+    marginHorizontal: 4,
   },
   subtaskRow: {
     flexDirection: 'row',

@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { View, StyleSheet, ScrollView, Alert } from 'react-native';
 import { Text, List, Divider, useTheme, Switch } from 'react-native-paper';
+import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useTasks } from '../../context/TaskContext';
 import CustomButton from '../../components/CustomButton';
@@ -9,8 +10,20 @@ const SettingsScreen = () => {
   const { clearAllTasks } = useTasks();
   const theme = useTheme();
 
-  // We skipped global theme switching, but we can leave a dummy switch to show UI layout
   const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
+
+  React.useEffect(() => {
+    AsyncStorage.getItem('pushNotifications').then((value) => {
+      if (value !== null) {
+        setIsNotificationsEnabled(value === 'true');
+      }
+    });
+  }, []);
+
+  const toggleNotifications = async (value: boolean) => {
+    setIsNotificationsEnabled(value);
+    await AsyncStorage.setItem('pushNotifications', value.toString());
+  };
 
   const handleClearData = () => {
     Alert.alert(
@@ -46,7 +59,7 @@ const SettingsScreen = () => {
           right={() => (
             <Switch 
               value={isNotificationsEnabled} 
-              onValueChange={setIsNotificationsEnabled} 
+              onValueChange={toggleNotifications} 
               color={theme.colors.primary}
             />
           )}

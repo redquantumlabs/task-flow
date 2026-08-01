@@ -77,13 +77,13 @@ const TaskDetailsScreen = () => {
 
           <View style={styles.metaContainer}>
             <Text variant="labelMedium" style={styles.metaLabel}>Created On:</Text>
-            <Text variant="bodyMedium">{format(new Date(task.createdAt), 'PPpp')}</Text>
+            <Text variant="bodyMedium">{format(new Date(task.createdAt), 'PP')}</Text>
           </View>
 
           {task.dueDate && (
             <View style={styles.metaContainer}>
               <Text variant="labelMedium" style={styles.metaLabel}>Due Date:</Text>
-              <Text variant="bodyMedium">{format(new Date(task.dueDate), 'PP')}</Text>
+              <Text variant="bodyMedium">{format(new Date(task.dueDate), 'PPpp')}</Text>
             </View>
           )}
         </Card.Content>
