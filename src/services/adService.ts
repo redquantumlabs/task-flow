@@ -1,7 +1,7 @@
 import mobileAds, { RewardedAd, RewardedAdEventType, TestIds, AdEventType } from 'react-native-google-mobile-ads';
 
 // Use test ID during development. In production, replace with your actual AdMob Rewarded Ad Unit ID.
-const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-xxxxxxxxxxxxx/yyyyyyyyyyyy';
+const adUnitId = __DEV__ ? TestIds.REWARDED : 'ca-app-pub-1503306553128874/4333081928';
 
 let rewardedAd: RewardedAd | null = null;
 let adLoaded = false;
