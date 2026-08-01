@@ -15,6 +15,7 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
   const channelId = await notifee.createChannel({
     id: 'task-reminders',
     name: 'Task Reminders',
+    sound: 'default',
   });
 
   // Schedule notification exactly at due date

@@ -1,5 +1,5 @@
-import React, { useState, useMemo } from 'react';
-import { View, StyleSheet, FlatList, ScrollView, TextInput, TouchableOpacity } from 'react-native';
+import React, { useState, useMemo, useEffect } from 'react';
+import { View, StyleSheet, FlatList, ScrollView, TextInput, TouchableOpacity, Alert } from 'react-native';
 import { Text, FAB, useTheme, Chip } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
@@ -8,16 +8,22 @@ import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { useTasks } from '../../context/TaskContext';
 import { RootStackParamList } from '../../navigation/types';
 import TaskCard from '../../components/TaskCard';
+import { loadRewardedAd, showRewardedAd } from '../../services/adService';
 
 type TasksScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const TasksScreen = () => {
-    const { tasks, toggleTaskCompletion, toggleSubtaskCompletion, deleteTask } = useTasks();
+    const { tasks, toggleTaskCompletion, toggleSubtaskCompletion, deleteTask, canAddTask, rewardUserWithMoreTasks } = useTasks();
     const theme = useTheme();
     const navigation = useNavigation<TasksScreenNavigationProp>();
 
     const [filter, setFilter] = useState('All');
     const [searchText, setSearchText] = useState('');
+
+    useEffect(() => {
+        // Pre-load the rewarded ad when the screen mounts
+        loadRewardedAd();
+    }, []);
 
     // Extract unique categories from current tasks
     const categories = useMemo(() => {
@@ -118,7 +124,31 @@ const TasksScreen = () => {
                 icon="plus"
                 style={[styles.fab, { backgroundColor: theme.colors.primary }]}
                 color="white"
-                onPress={() => navigation.navigate('AddEditTask', {})}
+                onPress={async () => {
+                    if (canAddTask) {
+                        navigation.navigate('AddEditTask', {});
+                    } else {
+                        Alert.alert(
+                            "Daily Limit Reached",
+                            "You have reached your daily limit of tasks. Watch a short ad to unlock 3 more tasks?",
+                            [
+                                { text: "Cancel", style: "cancel" },
+                                {
+                                    text: "Watch Ad",
+                                    onPress: async () => {
+                                        const rewarded = await showRewardedAd();
+                                        if (rewarded) {
+                                            rewardUserWithMoreTasks();
+                                            Alert.alert("Success", "You've unlocked 3 more tasks for today!");
+                                        } else {
+                                            Alert.alert("Ad Error", "The ad failed to load or was closed early. Please try again.");
+                                        }
+                                    }
+                                }
+                            ]
+                        );
+                    }
+                }}
             />
         </View>
     );
