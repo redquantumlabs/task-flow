@@ -1,5 +1,5 @@
 import React, { useState } from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
+import { View, StyleSheet, ScrollView, Linking } from 'react-native';
 import { Text, List, Divider, useTheme, Switch } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
@@ -53,11 +53,20 @@ const SettingsScreen = () => {
         <Divider />
 
         <List.Section style={styles.section}>
-          <List.Subheader>About</List.Subheader>
+          <List.Subheader>About & Legal</List.Subheader>
           <List.Item
-            title="Version"
-            description="1.0.0"
-            left={(props) => <List.Icon {...props} icon="information-outline" />}
+            title="Privacy Policy"
+            description="How we handle your data"
+            left={(props) => <List.Icon {...props} icon="shield-account-outline" />}
+            onPress={() => Linking.openURL('https://sites.google.com/view/task-flow-legal/privacy-policy')}
+            right={(props) => <List.Icon {...props} icon="open-in-new" />}
+          />
+          <List.Item
+            title="Terms & Conditions"
+            description="Rules and guidelines"
+            left={(props) => <List.Icon {...props} icon="file-document-outline" />}
+            onPress={() => Linking.openURL('https://sites.google.com/view/task-flow-legal/terms-conditions')}
+            right={(props) => <List.Icon {...props} icon="open-in-new" />}
           />
         </List.Section>
 
