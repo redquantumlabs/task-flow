@@ -25,10 +25,10 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
   const getPriorityColor = () => {
     switch (task.priority) {
-      case 'high': return theme.colors.error;
-      case 'medium': return 'orange';
-      case 'low': return 'green';
-      default: return theme.colors.primary;
+      case 'high': return '#F44336';
+      case 'medium': return '#FF9800';
+      case 'low': return '#4CAF50';
+      default: return '#757575';
     }
   };
 
