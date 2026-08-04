@@ -1,4 +1,4 @@
-package com.redquantumlabs.taskflow
+package com.rql.taskflow
 
 import android.app.Application
 import com.facebook.react.PackageList

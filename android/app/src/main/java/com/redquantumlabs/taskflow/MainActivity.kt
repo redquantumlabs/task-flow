@@ -1,4 +1,4 @@
-package com.redquantumlabs.taskflow
+package com.rql.taskflow
 
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
