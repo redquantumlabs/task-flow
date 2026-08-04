@@ -94,9 +94,9 @@ android {
         }
         release {
             storeFile file('taskflow-release-key.keystore')
-            storePassword 'redquantumlabs_taskflow_123'
+            storePassword 'rql_taskflow_111'
             keyAlias 'taskflow-key'
-            keyPassword 'redquantumlabs_taskflow_123'
+            keyPassword 'rql_taskflow_111'
         }
     }
     buildTypes {
