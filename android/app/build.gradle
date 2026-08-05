@@ -93,10 +93,10 @@ android {
             keyPassword 'android'
         }
         release {
-            storeFile file('taskflow-release-key.keystore')
-            storePassword 'rql_taskflow_111'
-            keyAlias 'taskflow-key'
-            keyPassword 'rql_taskflow_111'
+            storeFile file('upload-keystore.jks')
+            storePassword 'rql_111'
+            keyAlias 'upload'
+            keyPassword 'rql_111'
         }
     }
     buildTypes {
