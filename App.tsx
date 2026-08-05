@@ -15,12 +15,14 @@ const theme = {
   },
 };
 
+import BootSplash from 'react-native-bootsplash';
+
 const App = () => {
   return (
     <SafeAreaProvider>
       <PaperProvider theme={theme}>
         <TaskProvider>
-          <NavigationContainer>
+          <NavigationContainer onReady={() => BootSplash.hide({ fade: true })}>
             <RootNavigator />
           </NavigationContainer>
         </TaskProvider>
