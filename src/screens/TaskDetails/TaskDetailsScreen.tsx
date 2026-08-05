@@ -1,6 +1,6 @@
 import React from 'react';
-import { View, StyleSheet, ScrollView } from 'react-native';
-import { Text, Card, useTheme } from 'react-native-paper';
+import { View, StyleSheet, ScrollView, Alert } from 'react-native';
+import { Text, Card, useTheme, Checkbox } from 'react-native-paper';
 import { useNavigation, useRoute, RouteProp } from '@react-navigation/native';
 import { format } from 'date-fns';
 
@@ -13,7 +13,7 @@ type TaskDetailsRouteProp = RouteProp<RootStackParamList, 'TaskDetails'>;
 type TaskDetailsNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const TaskDetailsScreen = () => {
-  const { tasks, toggleTaskCompletion, deleteTask } = useTasks();
+  const { tasks, toggleTaskCompletion, toggleSubtaskCompletion, deleteTask } = useTasks();
   const navigation = useNavigation<TaskDetailsNavigationProp>();
   const route = useRoute<TaskDetailsRouteProp>();
   const theme = useTheme();
@@ -40,8 +40,21 @@ const TaskDetailsScreen = () => {
   };
 
   const handleDelete = () => {
-    deleteTask(task.id);
-    navigation.goBack();
+    Alert.alert(
+      "Delete Task",
+      "Are you sure you want to delete this task?",
+      [
+        { text: "Cancel", style: "cancel" },
+        {
+          text: "Delete",
+          style: "destructive",
+          onPress: () => {
+            deleteTask(task.id);
+            navigation.goBack();
+          }
+        }
+      ]
+    );
   };
 
   return (
@@ -80,10 +93,40 @@ const TaskDetailsScreen = () => {
             <Text variant="bodyMedium">{format(new Date(task.createdAt), 'PP')}</Text>
           </View>
 
+          {task.category && (
+            <View style={styles.metaContainer}>
+              <Text variant="labelMedium" style={styles.metaLabel}>Category:</Text>
+              <Text variant="bodyMedium">{task.category}</Text>
+            </View>
+          )}
+
           {task.dueDate && (
             <View style={styles.metaContainer}>
               <Text variant="labelMedium" style={styles.metaLabel}>Due Date:</Text>
               <Text variant="bodyMedium">{format(new Date(task.dueDate), 'PPpp')}</Text>
+            </View>
+          )}
+
+          {task.subtasks && task.subtasks.length > 0 && (
+            <View style={styles.subtasksSection}>
+              <Text variant="titleMedium" style={styles.subtasksHeader}>Subtasks</Text>
+              {task.subtasks.map((subtask) => (
+                <View key={subtask.id} style={styles.subtaskRow}>
+                  <Checkbox.Android
+                    status={subtask.completed ? 'checked' : 'unchecked'}
+                    onPress={() => toggleSubtaskCompletion(task.id, subtask.id)}
+                    color={theme.colors.primary}
+                  />
+                  <Text
+                    style={[
+                      styles.subtaskTitle,
+                      subtask.completed && styles.completedText,
+                    ]}
+                  >
+                    {subtask.title}
+                  </Text>
+                </View>
+              ))}
             </View>
           )}
         </Card.Content>
@@ -174,6 +217,29 @@ const styles = StyleSheet.create({
   },
   actionsContainer: {
     paddingBottom: 40,
+  },
+  subtasksSection: {
+    marginTop: 16,
+    paddingTop: 16,
+    borderTopWidth: 1,
+    borderTopColor: '#eeeeee',
+  },
+  subtasksHeader: {
+    fontWeight: 'bold',
+    marginBottom: 8,
+  },
+  subtaskRow: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    paddingVertical: 4,
+  },
+  subtaskTitle: {
+    fontSize: 14,
+    flex: 1,
+  },
+  completedText: {
+    textDecorationLine: 'line-through',
+    color: 'gray',
   },
 });
 

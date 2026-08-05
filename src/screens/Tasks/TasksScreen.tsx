@@ -54,6 +54,20 @@ const TasksScreen = () => {
             return priorityOrder[a.priority] - priorityOrder[b.priority];
         });
     }, [tasks, filter, searchText]);
+    const confirmDeleteTask = (taskId: string) => {
+        Alert.alert(
+            "Delete Task",
+            "Are you sure you want to delete this task?",
+            [
+                { text: "Cancel", style: "cancel" },
+                {
+                    text: "Delete",
+                    style: "destructive",
+                    onPress: () => deleteTask(taskId)
+                }
+            ]
+        );
+    };
 
     return (
         <View style={styles.container}>
@@ -113,7 +127,7 @@ const TasksScreen = () => {
                             task={item}
                             onToggleComplete={toggleTaskCompletion}
                             onToggleSubtaskComplete={toggleSubtaskCompletion}
-                            onDelete={deleteTask}
+                            onDelete={confirmDeleteTask}
                             onPress={(t) => navigation.navigate('TaskDetails', { taskId: t.id })}
                         />
                     )}
