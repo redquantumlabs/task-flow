@@ -102,8 +102,12 @@ const TaskDetailsScreen = () => {
 
           {task.dueDate && (
             <View style={styles.metaContainer}>
-              <Text variant="labelMedium" style={styles.metaLabel}>Due Date:</Text>
-              <Text variant="bodyMedium">{format(new Date(task.dueDate), 'PPpp')}</Text>
+              <Text variant="labelMedium" style={styles.metaLabel}>{task.isDaily ? 'Daily Reminder:' : 'Due Date:'}</Text>
+              <Text variant="bodyMedium">
+                {task.isDaily 
+                  ? `Daily at ${format(new Date(task.dueDate), 'hh:mm a')}`
+                  : format(new Date(task.dueDate), 'PPpp')}
+              </Text>
             </View>
           )}
 

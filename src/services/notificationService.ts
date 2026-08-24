@@ -1,11 +1,11 @@
-import notifee, { TimestampTrigger, TriggerType, AndroidImportance } from '@notifee/react-native';
+import notifee, { TimestampTrigger, TriggerType, AndroidImportance, RepeatFrequency } from '@notifee/react-native';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 export const requestNotificationPermission = async () => {
   await notifee.requestPermission();
 };
 
-export const scheduleTaskReminder = async (taskId: string, title: string, dueDate: Date) => {
+export const scheduleTaskReminder = async (taskId: string, title: string, dueDate: Date, isDaily: boolean = false) => {
   const notificationsSetting = await AsyncStorage.getItem('pushNotifications');
   if (notificationsSetting === 'false') {
     return; // User disabled notifications in settings
@@ -19,17 +19,24 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
     importance: AndroidImportance.HIGH,
   });
 
-  // Schedule notification exactly at due date
+  // Schedule notification at due date/time
   const reminderTime = new Date(dueDate.getTime());
 
-  // If the due date is in the past, we can't schedule it.
+  // If the due date is in the past:
+  // - for one-time task, we can't schedule it.
+  // - for daily task, schedule it for the next day.
   if (reminderTime.getTime() <= Date.now()) {
-    return;
+    if (isDaily) {
+      reminderTime.setDate(reminderTime.getDate() + 1);
+    } else {
+      return;
+    }
   }
 
   const trigger: TimestampTrigger = {
     type: TriggerType.TIMESTAMP,
     timestamp: reminderTime.getTime(),
+    ...(isDaily ? { repeatFrequency: RepeatFrequency.DAILY } : {}),
   };
 
   await notifee.createTriggerNotification(

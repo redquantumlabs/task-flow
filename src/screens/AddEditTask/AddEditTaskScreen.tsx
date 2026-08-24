@@ -36,6 +36,7 @@ const AddEditTaskScreen = () => {
   const [dueDate, setDueDate] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
+  const [isDaily, setIsDaily] = useState(false);
 
   useEffect(() => {
     if (isEditing) {
@@ -49,6 +50,7 @@ const AddEditTaskScreen = () => {
         if (existingTask.dueDate) {
           setDueDate(new Date(existingTask.dueDate));
         }
+        setIsDaily(existingTask.isDaily || false);
       }
     }
   }, [taskId, isEditing, tasks]);
@@ -102,6 +104,7 @@ const AddEditTaskScreen = () => {
         priority,
         subtasks,
         dueDate,
+        isDaily,
       });
     } else {
       addTask({
@@ -112,6 +115,7 @@ const AddEditTaskScreen = () => {
         subtasks,
         isCompleted: false,
         dueDate,
+        isDaily,
       });
     }
 
@@ -148,18 +152,33 @@ const AddEditTaskScreen = () => {
       />
 
       <Text variant="titleMedium" style={styles.sectionTitle}>
-        Due Date & Time
+        Recurrence
+      </Text>
+      <SegmentedButtons
+        value={isDaily ? 'daily' : 'once'}
+        onValueChange={(val) => setIsDaily(val === 'daily')}
+        buttons={[
+          { value: 'once', label: 'One-time' },
+          { value: 'daily', label: 'Daily' },
+        ]}
+        style={styles.segmentedButtons}
+      />
+
+      <Text variant="titleMedium" style={styles.sectionTitle}>
+        {isDaily ? 'Reminder Time' : 'Due Date & Time'}
       </Text>
 
       <View style={styles.dateTimeContainer}>
-        <Button 
-          mode="outlined" 
-          icon="calendar" 
-          onPress={() => setShowDatePicker(true)}
-          style={styles.dateTimeButton}
-        >
-          {format(dueDate, 'MMM dd, yyyy')}
-        </Button>
+        {!isDaily && (
+          <Button 
+            mode="outlined" 
+            icon="calendar" 
+            onPress={() => setShowDatePicker(true)}
+            style={styles.dateTimeButton}
+          >
+            {format(dueDate, 'MMM dd, yyyy')}
+          </Button>
+        )}
         <Button 
           mode="outlined" 
           icon="clock-outline" 

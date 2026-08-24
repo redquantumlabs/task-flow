@@ -83,7 +83,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     AsyncStorage.setItem('tasksAddedToday', newCount.toString());
 
     if (newTask.dueDate) {
-      scheduleTaskReminder(newTask.id, newTask.title, newTask.dueDate);
+      scheduleTaskReminder(newTask.id, newTask.title, newTask.dueDate, newTask.isDaily);
     }
   };
 
@@ -102,7 +102,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           if (updatedTask.isCompleted) {
             cancelTaskReminder(id);
           } else if (updatedTask.dueDate) {
-            scheduleTaskReminder(id, updatedTask.title, updatedTask.dueDate);
+            scheduleTaskReminder(id, updatedTask.title, updatedTask.dueDate, updatedTask.isDaily);
           }
 
           return updatedTask;
@@ -131,7 +131,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           if (isCompleted) {
             cancelTaskReminder(id);
           } else if (task.dueDate) {
-            scheduleTaskReminder(id, task.title, task.dueDate);
+            scheduleTaskReminder(id, task.title, task.dueDate, task.isDaily);
           }
           return { ...task, isCompleted, subtasks: updatedSubtasks, updatedAt: new Date() };
         }
@@ -153,7 +153,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
           if (allSubtasksCompleted && !task.isCompleted) {
             cancelTaskReminder(taskId);
           } else if (!allSubtasksCompleted && task.isCompleted && task.dueDate) {
-            scheduleTaskReminder(taskId, task.title, task.dueDate);
+            scheduleTaskReminder(taskId, task.title, task.dueDate, task.isDaily);
           }
 
           return {

@@ -88,7 +88,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
               {task.dueDate && (
                 <Text style={styles.dateText}>
-                  {format(new Date(task.dueDate), 'MMM dd')}
+                  {task.isDaily 
+                    ? `Daily, ${format(new Date(task.dueDate), 'hh:mm a')}`
+                    : format(new Date(task.dueDate), 'MMM dd')}
                 </Text>
               )}
             </View>

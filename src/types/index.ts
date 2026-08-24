@@ -15,6 +15,7 @@ export interface Task {
   category: string;
   subtasks?: Subtask[];
   dueDate?: Date | null;
+  isDaily?: boolean;
   createdAt: Date;
   updatedAt: Date;
 }
