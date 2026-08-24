@@ -36,6 +36,7 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
         body: `Your task "${title}" is due now!`,
         android: {
           channelId,
+          smallIcon: 'ic_launcher',
           pressAction: {
             id: 'default',
           },
@@ -55,7 +56,7 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
         daysToAdd += 7;
       }
       nextDate.setDate(nextDate.getDate() + daysToAdd);
-      
+
       // If the resulting date is in the past, push it to next week
       if (nextDate.getTime() <= now.getTime()) {
         nextDate.setDate(nextDate.getDate() + 7);
@@ -74,8 +75,8 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
     }
 
     await createTriggerNotification(
-      taskId, 
-      reminderTime.getTime(), 
+      taskId,
+      reminderTime.getTime(),
       isDaily ? RepeatFrequency.DAILY : undefined
     );
   }
