@@ -102,11 +102,23 @@ const TaskDetailsScreen = () => {
 
           {task.dueDate && (
             <View style={styles.metaContainer}>
-              <Text variant="labelMedium" style={styles.metaLabel}>{task.isDaily ? 'Daily Reminder:' : 'Due Date:'}</Text>
+              <Text variant="labelMedium" style={styles.metaLabel}>
+                {task.selectedDays && task.selectedDays.length > 0 
+                  ? 'Weekly Reminder:' 
+                  : task.isDaily ? 'Daily Reminder:' : 'Due Date:'}
+              </Text>
               <Text variant="bodyMedium">
-                {task.isDaily 
-                  ? `Daily at ${format(new Date(task.dueDate), 'hh:mm a')}`
-                  : format(new Date(task.dueDate), 'PPpp')}
+                {(() => {
+                  if (task.selectedDays && task.selectedDays.length > 0) {
+                    const days = ['Sun', 'Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat'];
+                    const selectedNames = task.selectedDays.map(d => days[d]).join(', ');
+                    return `Weekly on ${selectedNames} at ${format(new Date(task.dueDate), 'hh:mm a')}`;
+                  }
+                  if (task.isDaily) {
+                    return `Daily at ${format(new Date(task.dueDate), 'hh:mm a')}`;
+                  }
+                  return format(new Date(task.dueDate), 'PPpp');
+                })()}
               </Text>
             </View>
           )}

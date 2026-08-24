@@ -88,9 +88,15 @@ const TaskCard: React.FC<TaskCardProps> = ({
 
               {task.dueDate && (
                 <Text style={styles.dateText}>
-                  {task.isDaily 
-                    ? `Daily, ${format(new Date(task.dueDate), 'hh:mm a')}`
-                    : format(new Date(task.dueDate), 'MMM dd')}
+                  {(() => {
+                    if (task.selectedDays && task.selectedDays.length > 0) {
+                      return `${task.selectedDays.length} days/wk, ${format(new Date(task.dueDate), 'hh:mm a')}`;
+                    }
+                    if (task.isDaily) {
+                      return `Daily, ${format(new Date(task.dueDate), 'hh:mm a')}`;
+                    }
+                    return format(new Date(task.dueDate), 'MMM dd');
+                  })()}
                 </Text>
               )}
             </View>

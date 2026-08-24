@@ -16,6 +16,7 @@ export interface Task {
   subtasks?: Subtask[];
   dueDate?: Date | null;
   isDaily?: boolean;
+  selectedDays?: number[];
   createdAt: Date;
   updatedAt: Date;
 }

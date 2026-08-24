@@ -36,7 +36,8 @@ const AddEditTaskScreen = () => {
   const [dueDate, setDueDate] = useState<Date>(new Date());
   const [showDatePicker, setShowDatePicker] = useState(false);
   const [showTimePicker, setShowTimePicker] = useState(false);
-  const [isDaily, setIsDaily] = useState(false);
+  const [recurrence, setRecurrence] = useState<'once' | 'daily' | 'weekly'>('once');
+  const [selectedDays, setSelectedDays] = useState<number[]>([]);
 
   useEffect(() => {
     if (isEditing) {
@@ -50,7 +51,14 @@ const AddEditTaskScreen = () => {
         if (existingTask.dueDate) {
           setDueDate(new Date(existingTask.dueDate));
         }
-        setIsDaily(existingTask.isDaily || false);
+        if (existingTask.selectedDays && existingTask.selectedDays.length > 0) {
+          setRecurrence('weekly');
+          setSelectedDays(existingTask.selectedDays);
+        } else if (existingTask.isDaily) {
+          setRecurrence('daily');
+        } else {
+          setRecurrence('once');
+        }
       }
     }
   }, [taskId, isEditing, tasks]);
@@ -96,6 +104,9 @@ const AddEditTaskScreen = () => {
     
     const categoryToSave = category.trim() || 'General';
 
+    const isDaily = recurrence === 'daily';
+    const finalSelectedDays = recurrence === 'weekly' ? selectedDays : [];
+
     if (isEditing && taskId) {
       updateTask(taskId, {
         title: title.trim(),
@@ -105,6 +116,7 @@ const AddEditTaskScreen = () => {
         subtasks,
         dueDate,
         isDaily,
+        selectedDays: finalSelectedDays,
       });
     } else {
       addTask({
@@ -116,6 +128,7 @@ const AddEditTaskScreen = () => {
         isCompleted: false,
         dueDate,
         isDaily,
+        selectedDays: finalSelectedDays,
       });
     }
 
@@ -155,21 +168,45 @@ const AddEditTaskScreen = () => {
         Recurrence
       </Text>
       <SegmentedButtons
-        value={isDaily ? 'daily' : 'once'}
-        onValueChange={(val) => setIsDaily(val === 'daily')}
+        value={recurrence}
+        onValueChange={(val) => setRecurrence(val as 'once' | 'daily' | 'weekly')}
         buttons={[
           { value: 'once', label: 'One-time' },
           { value: 'daily', label: 'Daily' },
+          { value: 'weekly', label: 'Custom' },
         ]}
         style={styles.segmentedButtons}
       />
 
+      {recurrence === 'weekly' && (
+        <View style={styles.daysContainer}>
+          {['S', 'M', 'T', 'W', 'T', 'F', 'S'].map((day, index) => {
+            const isSelected = selectedDays.includes(index);
+            return (
+              <TouchableOpacity
+                key={index}
+                style={[styles.dayCircle, { backgroundColor: isSelected ? theme.colors.primary : '#e0e0e0' }]}
+                onPress={() => {
+                  if (isSelected) {
+                    setSelectedDays(selectedDays.filter(d => d !== index));
+                  } else {
+                    setSelectedDays([...selectedDays, index].sort());
+                  }
+                }}
+              >
+                <Text style={{ color: isSelected ? 'white' : 'black', fontWeight: 'bold' }}>{day}</Text>
+              </TouchableOpacity>
+            );
+          })}
+        </View>
+      )}
+
       <Text variant="titleMedium" style={styles.sectionTitle}>
-        {isDaily ? 'Reminder Time' : 'Due Date & Time'}
+        {recurrence !== 'once' ? 'Reminder Time' : 'Due Date & Time'}
       </Text>
 
       <View style={styles.dateTimeContainer}>
-        {!isDaily && (
+        {recurrence === 'once' && (
           <Button 
             mode="outlined" 
             icon="calendar" 
@@ -287,6 +324,19 @@ const styles = StyleSheet.create({
     marginTop: 16,
     marginBottom: 8,
     fontWeight: 'bold',
+  },
+  daysContainer: {
+    flexDirection: 'row',
+    justifyContent: 'space-between',
+    marginBottom: 16,
+    paddingHorizontal: 8,
+  },
+  dayCircle: {
+    width: 40,
+    height: 40,
+    borderRadius: 20,
+    alignItems: 'center',
+    justifyContent: 'center',
   },
   dateTimeContainer: {
     flexDirection: 'row',
