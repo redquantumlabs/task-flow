@@ -26,6 +26,9 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
     const trigger: TimestampTrigger = {
       type: TriggerType.TIMESTAMP,
       timestamp,
+      alarmManager: {
+        allowWhileIdle: true,
+      },
       ...(repeatFrequency ? { repeatFrequency } : {}),
     };
 
