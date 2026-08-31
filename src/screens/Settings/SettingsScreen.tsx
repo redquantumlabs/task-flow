@@ -9,21 +9,6 @@ import CustomButton from '../../components/CustomButton';
 const SettingsScreen = () => {
   const theme = useTheme();
 
-  const [isNotificationsEnabled, setIsNotificationsEnabled] = useState(true);
-
-  React.useEffect(() => {
-    AsyncStorage.getItem('pushNotifications').then((value) => {
-      if (value !== null) {
-        setIsNotificationsEnabled(value === 'true');
-      }
-    });
-  }, []);
-
-  const toggleNotifications = async (value: boolean) => {
-    setIsNotificationsEnabled(value);
-    await AsyncStorage.setItem('pushNotifications', value.toString());
-  };
-
   return (
     <View style={styles.container}>
       <View style={styles.headerContainer}>
@@ -34,23 +19,6 @@ const SettingsScreen = () => {
       <View style={styles.divider} />
 
       <ScrollView showsVerticalScrollIndicator={false}>
-        <List.Section style={styles.section}>
-          <List.Subheader>Preferences</List.Subheader>
-          <List.Item
-            title="Push Notifications"
-            description="Receive reminders for due tasks"
-            left={(props) => <List.Icon {...props} icon="bell-outline" />}
-            right={() => (
-              <Switch
-                value={isNotificationsEnabled}
-                onValueChange={toggleNotifications}
-                color={theme.colors.primary}
-              />
-            )}
-          />
-        </List.Section>
-
-        <Divider />
 
         <List.Section style={styles.section}>
           <List.Subheader>About & Legal</List.Subheader>

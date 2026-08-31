@@ -6,10 +6,7 @@ export const requestNotificationPermission = async () => {
 };
 
 export const scheduleTaskReminder = async (taskId: string, title: string, dueDate: Date, isDaily: boolean = false, selectedDays: number[] = []) => {
-  const notificationsSetting = await AsyncStorage.getItem('pushNotifications');
-  if (notificationsSetting === 'false') {
-    return; // User disabled notifications in settings
-  }
+
 
   // Create a new channel
   const channelId = await notifee.createChannel({
