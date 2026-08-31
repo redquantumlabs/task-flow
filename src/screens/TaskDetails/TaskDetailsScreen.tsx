@@ -58,8 +58,8 @@ const TaskDetailsScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container}>
-      <Card style={styles.card}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <Card style={[styles.card, { backgroundColor: theme.colors.surface }]}>
         <Card.Content>
           <View style={styles.header}>
             <View style={[styles.priorityBadge, { backgroundColor: getPriorityColor() + '20' }]}>
@@ -86,7 +86,7 @@ const TaskDetailsScreen = () => {
             </Text>
           )}
 
-          <View style={styles.divider} />
+          <View style={[styles.divider, { backgroundColor: theme.colors.outline }]} />
 
           <View style={styles.metaContainer}>
             <Text variant="labelMedium" style={styles.metaLabel}>Created On:</Text>
@@ -124,7 +124,7 @@ const TaskDetailsScreen = () => {
           )}
 
           {task.subtasks && task.subtasks.length > 0 && (
-            <View style={styles.subtasksSection}>
+            <View style={[styles.subtasksSection, { borderTopColor: theme.colors.outline }]}>
               <Text variant="titleMedium" style={styles.subtasksHeader}>Subtasks</Text>
               {task.subtasks.map((subtask) => (
                 <View key={subtask.id} style={styles.subtaskRow}>
@@ -176,7 +176,6 @@ const TaskDetailsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
     padding: 16,
   },
   centered: {
@@ -185,7 +184,6 @@ const styles = StyleSheet.create({
     alignItems: 'center',
   },
   card: {
-    backgroundColor: '#ffffff',
     marginBottom: 24,
   },
   header: {
@@ -220,7 +218,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#eeeeee',
     marginVertical: 16,
   },
   metaContainer: {
@@ -238,7 +235,6 @@ const styles = StyleSheet.create({
     marginTop: 16,
     paddingTop: 16,
     borderTopWidth: 1,
-    borderTopColor: '#eeeeee',
   },
   subtasksHeader: {
     fontWeight: 'bold',

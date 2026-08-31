@@ -40,7 +40,7 @@ const TaskCard: React.FC<TaskCardProps> = ({
       exiting={FadeOutDown} 
       layout={Layout.springify()}
     >
-      <Card style={styles.card} onPress={() => onPress(task)}>
+      <Card style={[styles.card, { backgroundColor: theme.colors.surface }]} onPress={() => onPress(task)}>
         <View style={styles.container}>
           <View style={styles.checkboxContainer}>
             <Checkbox.Android
@@ -152,7 +152,6 @@ const styles = StyleSheet.create({
   card: {
     marginVertical: 6,
     marginHorizontal: 16,
-    backgroundColor: '#ffffff',
   },
   container: {
     flexDirection: 'row',

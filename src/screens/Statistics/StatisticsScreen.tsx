@@ -23,7 +23,7 @@ const StatisticsScreen = () => {
   }, [tasks]);
 
   const StatCard = ({ title, value, icon, color }: any) => (
-    <View style={[styles.statCard, { backgroundColor: '#ffffff' }]}>
+    <View style={[styles.statCard, { backgroundColor: theme.colors.surface }]}>
       <View style={[styles.iconCircle, { backgroundColor: `${color}20` }]}>
         <Icon name={icon} size={24} color={color} />
       </View>
@@ -33,11 +33,11 @@ const StatisticsScreen = () => {
   );
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface }]}>
         <Text style={styles.header}>📊 Statistics</Text>
       </View>
-      <View style={styles.divider} />
+      <View style={[styles.divider, { backgroundColor: theme.colors.outline }]} />
 
       <ScrollView contentContainerStyle={styles.scrollContent} showsVerticalScrollIndicator={false}>
         {/* Progress Card */}
@@ -59,7 +59,7 @@ const StatisticsScreen = () => {
       </View>
 
       {/* Priorities Card */}
-      <View style={[styles.prioritiesCard, { backgroundColor: '#ffffff' }]}>
+      <View style={[styles.prioritiesCard, { backgroundColor: theme.colors.surface }]}>
         <Text style={styles.prioritiesHeader}>Priorities</Text>
         
         {[
@@ -86,10 +86,8 @@ const StatisticsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   headerContainer: {
-    backgroundColor: '#ffffff',
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
@@ -100,7 +98,6 @@ const styles = StyleSheet.create({
   },
   divider: {
     height: 1,
-    backgroundColor: '#e0e0e0',
     shadowColor: '#000',
     shadowOffset: { width: 0, height: 2 },
     shadowOpacity: 0.1,

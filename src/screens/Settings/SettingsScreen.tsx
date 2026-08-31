@@ -4,14 +4,16 @@ import { Text, List, Divider, useTheme, Switch } from 'react-native-paper';
 import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useTasks } from '../../context/TaskContext';
+import { useAppTheme } from '../../context/ThemeContext';
 import CustomButton from '../../components/CustomButton';
 
 const SettingsScreen = () => {
   const theme = useTheme();
+  const { isDarkMode, toggleTheme } = useAppTheme();
 
   return (
-    <View style={styles.container}>
-      <View style={styles.headerContainer}>
+    <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+      <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface }]}>
         <Text variant="headlineMedium" style={styles.header}>
           ⚙️ Settings
         </Text>
@@ -20,7 +22,25 @@ const SettingsScreen = () => {
 
       <ScrollView showsVerticalScrollIndicator={false}>
 
-        <List.Section style={styles.section}>
+        <List.Section style={[styles.section, { backgroundColor: theme.colors.surface }]}>
+          <List.Subheader>Preferences</List.Subheader>
+          <List.Item
+            title="Dark Theme"
+            description="Toggle dark mode"
+            left={(props) => <List.Icon {...props} icon="theme-light-dark" />}
+            right={() => (
+              <Switch
+                value={isDarkMode}
+                onValueChange={toggleTheme}
+                color={theme.colors.primary}
+              />
+            )}
+          />
+        </List.Section>
+
+        <Divider />
+
+        <List.Section style={[styles.section, { backgroundColor: theme.colors.surface }]}>
           <List.Subheader>About & Legal</List.Subheader>
           <List.Item
             title="Privacy Policy"
@@ -46,10 +66,8 @@ const SettingsScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#f5f5f5',
   },
   headerContainer: {
-    backgroundColor: '#ffffff',
     paddingHorizontal: 16,
     paddingTop: 16,
     paddingBottom: 12,
@@ -68,7 +86,6 @@ const styles = StyleSheet.create({
     marginBottom: 8,
   },
   section: {
-    backgroundColor: '#ffffff',
   },
 });
 

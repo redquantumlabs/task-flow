@@ -70,20 +70,20 @@ const TasksScreen = () => {
     };
 
     return (
-        <View style={styles.container}>
-            <View style={styles.headerContainer}>
+        <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
+            <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface }]}>
                 <Text style={styles.headerTitle}>📝 Tasks</Text>
             </View>
-            <View style={styles.divider} />
+            <View style={[styles.divider, { backgroundColor: theme.colors.outline }]} />
 
-            <View style={styles.searchContainer}>
+            <View style={[styles.searchContainer, { backgroundColor: theme.colors.surface, borderColor: theme.colors.outline }]}>
                 <Icon name="magnify" size={20} color="gray" style={styles.searchIcon} />
                 <TextInput
                     placeholder="Search Tasks..."
-                    placeholderTextColor="#888888"
+                    placeholderTextColor="gray"
                     value={searchText}
                     onChangeText={setSearchText}
-                    style={styles.searchInput}
+                    style={[styles.searchInput, { color: theme.colors.onSurface }]}
                 />
                 {searchText.length > 0 && (
                     <TouchableOpacity onPress={() => setSearchText('')}>
@@ -171,10 +171,8 @@ const TasksScreen = () => {
 const styles = StyleSheet.create({
     container: {
         flex: 1,
-        backgroundColor: '#f5f5f5',
     },
     headerContainer: {
-        backgroundColor: '#ffffff',
         paddingHorizontal: 16,
         paddingTop: 16,
         paddingBottom: 12,
@@ -185,7 +183,6 @@ const styles = StyleSheet.create({
     },
     divider: {
         height: 1,
-        backgroundColor: '#e0e0e0',
         marginBottom: 16,
         shadowColor: '#000',
         shadowOffset: { width: 0, height: 2 },
@@ -196,13 +193,11 @@ const styles = StyleSheet.create({
     searchContainer: {
         flexDirection: 'row',
         alignItems: 'center',
-        backgroundColor: '#ffffff',
         marginHorizontal: 16,
         borderRadius: 12,
         paddingHorizontal: 12,
         marginBottom: 12,
         borderWidth: 1,
-        borderColor: '#e0e0e0',
     },
     searchIcon: {
         marginRight: 8,
@@ -211,7 +206,6 @@ const styles = StyleSheet.create({
         flex: 1,
         paddingVertical: 10,
         fontSize: 16,
-        color: '#000000',
     },
     chipsContainer: {
         paddingLeft: 16,

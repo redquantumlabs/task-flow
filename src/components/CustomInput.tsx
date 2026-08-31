@@ -40,7 +40,7 @@ const CustomInput: React.FC<CustomInputProps> = ({
         numberOfLines={numberOfLines}
         secureTextEntry={secureTextEntry}
         keyboardType={keyboardType}
-        style={[styles.input, multiline && { minHeight: 80 }]}
+        style={[styles.input, { backgroundColor: theme.colors.surface }, multiline && { minHeight: 80 }]}
         outlineColor={theme.colors.outline}
         activeOutlineColor={theme.colors.primary}
       />
@@ -58,7 +58,6 @@ const styles = StyleSheet.create({
     marginVertical: 8,
   },
   input: {
-    backgroundColor: '#ffffff',
   },
   errorText: {
     fontSize: 12,

@@ -136,7 +136,7 @@ const AddEditTaskScreen = () => {
   };
 
   return (
-    <ScrollView style={styles.container} contentContainerStyle={styles.content}>
+    <ScrollView style={[styles.container, { backgroundColor: theme.colors.background }]} contentContainerStyle={styles.content}>
       <CustomInput
         label="Task Title *"
         value={title}
@@ -185,7 +185,7 @@ const AddEditTaskScreen = () => {
             return (
               <TouchableOpacity
                 key={index}
-                style={[styles.dayCircle, { backgroundColor: isSelected ? theme.colors.primary : '#e0e0e0' }]}
+                style={[styles.dayCircle, { backgroundColor: isSelected ? theme.colors.primary : theme.colors.surfaceVariant }]}
                 onPress={() => {
                   if (isSelected) {
                     setSelectedDays(selectedDays.filter(d => d !== index));
@@ -194,7 +194,7 @@ const AddEditTaskScreen = () => {
                   }
                 }}
               >
-                <Text style={{ color: isSelected ? 'white' : 'black', fontWeight: 'bold' }}>{day}</Text>
+                <Text style={{ color: isSelected ? theme.colors.onPrimary : theme.colors.onSurfaceVariant, fontWeight: 'bold' }}>{day}</Text>
               </TouchableOpacity>
             );
           })}
@@ -249,7 +249,7 @@ const AddEditTaskScreen = () => {
       </Text>
       
       {subtasks.map((st) => (
-        <View key={st.id} style={styles.subtaskRow}>
+        <View key={st.id} style={[styles.subtaskRow, { backgroundColor: theme.colors.surfaceVariant }]}>
           <Text style={styles.subtaskText}>• {st.title}</Text>
           <IconButton
             icon="close-circle-outline"
@@ -314,7 +314,6 @@ const AddEditTaskScreen = () => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-    backgroundColor: '#ffffff',
   },
   content: {
     padding: 16,
@@ -351,7 +350,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems: 'center',
     justifyContent: 'space-between',
-    backgroundColor: '#f5f5f5',
     paddingLeft: 12,
     borderRadius: 8,
     marginBottom: 8,
