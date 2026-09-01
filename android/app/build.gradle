@@ -82,9 +82,17 @@ android {
         applicationId "com.rql.taskflow"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 4
-        versionName "1.0.2"
+        versionCode 5
+        versionName "1.0.3"
         resValue "string", "app_name", "Task Flow"
+        
+        // Ensure the app includes libraries for all device architectures:
+        // - armeabi-v7a: 32-bit physical Android devices
+        // - arm64-v8a: 64-bit physical Android devices
+        // - x86 & x86_64: Intel/AMD Emulators and Chrome OS devices
+        ndk {
+            abiFilters "armeabi-v7a", "arm64-v8a", "x86", "x86_64"
+        }
     }
     signingConfigs {
         debug {
