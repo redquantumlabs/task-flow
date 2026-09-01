@@ -82,8 +82,8 @@ android {
         applicationId "com.rql.taskflow"
         minSdkVersion rootProject.ext.minSdkVersion
         targetSdkVersion rootProject.ext.targetSdkVersion
-        versionCode 6
-        versionName "1.0.4"
+        versionCode 7
+        versionName "1.0.5"
         resValue "string", "app_name", "Task Flow"
         
         // Ensure the app includes libraries for all device architectures:
