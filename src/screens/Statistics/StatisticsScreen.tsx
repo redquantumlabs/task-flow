@@ -2,12 +2,14 @@ import React, { useMemo } from 'react';
 import { View, StyleSheet, ScrollView } from 'react-native';
 import { Text, useTheme } from 'react-native-paper';
 import Icon from 'react-native-vector-icons/Ionicons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTasks } from '../../context/TaskContext';
 
 const StatisticsScreen = () => {
   const { tasks } = useTasks();
   const theme = useTheme();
+  const insets = useSafeAreaInsets();
 
   const stats = useMemo(() => {
     const total = tasks.length;
@@ -34,7 +36,7 @@ const StatisticsScreen = () => {
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface }]}>
+      <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface, paddingTop: insets.top + 16 }]}>
         <Text style={styles.header}>📊 Statistics</Text>
       </View>
       <View style={[styles.divider, { backgroundColor: theme.colors.outline }]} />

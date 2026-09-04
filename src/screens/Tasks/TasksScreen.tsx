@@ -4,6 +4,7 @@ import { Text, FAB, useTheme, Chip } from 'react-native-paper';
 import { useNavigation } from '@react-navigation/native';
 import { NativeStackNavigationProp } from '@react-navigation/native-stack';
 import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 import { useTasks } from '../../context/TaskContext';
 import { RootStackParamList } from '../../navigation/types';
@@ -16,6 +17,7 @@ const TasksScreen = () => {
     const { tasks, toggleTaskCompletion, toggleSubtaskCompletion, deleteTask, canAddTask, rewardUserWithMoreTasks } = useTasks();
     const theme = useTheme();
     const navigation = useNavigation<TasksScreenNavigationProp>();
+    const insets = useSafeAreaInsets();
 
     const [filter, setFilter] = useState('All');
     const [searchText, setSearchText] = useState('');
@@ -71,7 +73,7 @@ const TasksScreen = () => {
 
     return (
         <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-            <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface }]}>
+            <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface, paddingTop: insets.top + 16 }]}>
                 <Text style={styles.headerTitle}>📝 Tasks</Text>
             </View>
             <View style={[styles.divider, { backgroundColor: theme.colors.outline }]} />

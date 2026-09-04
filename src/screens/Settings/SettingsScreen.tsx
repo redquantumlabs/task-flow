@@ -5,15 +5,17 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 
 import { useTasks } from '../../context/TaskContext';
 import { useAppTheme } from '../../context/ThemeContext';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomButton from '../../components/CustomButton';
 
 const SettingsScreen = () => {
   const theme = useTheme();
   const { isDarkMode, toggleTheme } = useAppTheme();
+  const insets = useSafeAreaInsets();
 
   return (
     <View style={[styles.container, { backgroundColor: theme.colors.background }]}>
-      <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface }]}>
+      <View style={[styles.headerContainer, { backgroundColor: theme.colors.surface, paddingTop: insets.top + 16 }]}>
         <Text variant="headlineMedium" style={styles.header}>
           ⚙️ Settings
         </Text>
