@@ -14,7 +14,7 @@ import { loadRewardedAd, showRewardedAd } from '../../services/adService';
 type TasksScreenNavigationProp = NativeStackNavigationProp<RootStackParamList>;
 
 const TasksScreen = () => {
-    const { tasks, toggleTaskCompletion, toggleSubtaskCompletion, deleteTask, canAddTask, rewardUserWithMoreTasks } = useTasks();
+    const { tasks, toggleTaskCompletion, toggleSubtaskCompletion, deleteTask, canAddTask, rewardUserWithMoreTasks, hideCompletedTasks } = useTasks();
     const theme = useTheme();
     const navigation = useNavigation<TasksScreenNavigationProp>();
     const insets = useSafeAreaInsets();
@@ -45,6 +45,10 @@ const TasksScreen = () => {
 
             // 2. Filter Logic
             if (filter === 'Completed') return task.isCompleted;
+            
+            // Apply setting: hide completed tasks unless the Completed filter is active
+            if (hideCompletedTasks && task.isCompleted) return false;
+
             if (filter === 'Pending') return !task.isCompleted;
             if (filter === 'All') return true;
 
@@ -55,7 +59,7 @@ const TasksScreen = () => {
             const priorityOrder = { high: 1, medium: 2, low: 3 };
             return priorityOrder[a.priority] - priorityOrder[b.priority];
         });
-    }, [tasks, filter, searchText]);
+    }, [tasks, filter, searchText, hideCompletedTasks]);
     const confirmDeleteTask = (taskId: string) => {
         Alert.alert(
             "Delete Task",

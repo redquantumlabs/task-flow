@@ -11,6 +11,7 @@ import CustomButton from '../../components/CustomButton';
 const SettingsScreen = () => {
   const theme = useTheme();
   const { isDarkMode, toggleTheme } = useAppTheme();
+  const { hideCompletedTasks, toggleHideCompletedTasks } = useTasks();
   const insets = useSafeAreaInsets();
 
   return (
@@ -34,6 +35,18 @@ const SettingsScreen = () => {
               <Switch
                 value={isDarkMode}
                 onValueChange={toggleTheme}
+                color={theme.colors.primary}
+              />
+            )}
+          />
+          <List.Item
+            title="Hide Completed Tasks"
+            description="Hide completed tasks from the main view"
+            left={(props) => <List.Icon {...props} icon="eye-off-outline" />}
+            right={() => (
+              <Switch
+                value={hideCompletedTasks}
+                onValueChange={toggleHideCompletedTasks}
                 color={theme.colors.primary}
               />
             )}

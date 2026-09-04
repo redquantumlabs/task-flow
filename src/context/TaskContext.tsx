@@ -17,6 +17,8 @@ interface TaskContextType {
   tasksAddedToday: number;
   dailyTaskLimit: number;
   rewardUserWithMoreTasks: () => void;
+  hideCompletedTasks: boolean;
+  toggleHideCompletedTasks: () => void;
 }
 
 export const TaskContext = createContext<TaskContextType | undefined>(undefined);
@@ -28,6 +30,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   const [tasksAddedToday, setTasksAddedToday] = useState(0);
   const [dailyTaskLimit, setDailyTaskLimit] = useState(3);
   const [lastActiveDate, setLastActiveDate] = useState('');
+  const [hideCompletedTasks, setHideCompletedTasks] = useState(false);
 
   // Load tasks on initial mount
   useEffect(() => {
@@ -51,6 +54,11 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         setDailyTaskLimit(3);
       }
       setLastActiveDate(todayStr);
+
+      const storedHideCompletedTasks = await AsyncStorage.getItem('hideCompletedTasks');
+      if (storedHideCompletedTasks !== null) {
+        setHideCompletedTasks(storedHideCompletedTasks === 'true');
+      }
 
       setIsLoading(false);
     };
@@ -172,6 +180,14 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
     setTasks([]);
   };
 
+  const toggleHideCompletedTasks = () => {
+    setHideCompletedTasks((prev) => {
+      const newVal = !prev;
+      AsyncStorage.setItem('hideCompletedTasks', newVal.toString());
+      return newVal;
+    });
+  };
+
   return (
     <TaskContext.Provider
       value={{
@@ -187,6 +203,8 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
         tasksAddedToday,
         dailyTaskLimit,
         rewardUserWithMoreTasks,
+        hideCompletedTasks,
+        toggleHideCompletedTasks,
       }}
     >
       {children}

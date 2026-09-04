@@ -16,13 +16,19 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
     importance: AndroidImportance.HIGH,
   });
 
+  // Remove static 'now' variable to avoid stale dates
   const reminderTime = new Date(dueDate.getTime());
-  const now = new Date();
 
   const createTriggerNotification = async (id: string, timestamp: number, repeatFrequency?: RepeatFrequency) => {
+    // Final safeguard: ensure timestamp is always strictly in the future before passing to notifee
+    let safeTimestamp = timestamp;
+    if (safeTimestamp <= Date.now()) {
+      safeTimestamp = Date.now() + 2000;
+    }
+
     const trigger: TimestampTrigger = {
       type: TriggerType.TIMESTAMP,
-      timestamp,
+      timestamp: safeTimestamp,
       alarmManager: {
         allowWhileIdle: true,
       },
@@ -57,8 +63,8 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
       }
       nextDate.setDate(nextDate.getDate() + daysToAdd);
 
-      // If the resulting date is in the past, push it to next week
-      if (nextDate.getTime() <= now.getTime()) {
+      // If the resulting date is in the past (or extremely close), push it to next week
+      if (nextDate.getTime() <= Date.now() + 2000) {
         nextDate.setDate(nextDate.getDate() + 7);
       }
 
@@ -66,8 +72,9 @@ export const scheduleTaskReminder = async (taskId: string, title: string, dueDat
     }
   } else {
     // One-time or Daily
-    if (reminderTime.getTime() <= now.getTime()) {
+    if (reminderTime.getTime() <= Date.now() + 2000) {
       if (isDaily) {
+        // If it's a daily task and the time has passed, schedule for tomorrow
         reminderTime.setDate(reminderTime.getDate() + 1);
       } else {
         return; // Don't schedule one-time in the past
