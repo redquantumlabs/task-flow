@@ -11,9 +11,9 @@ import com.zoontek.rnbootsplash.RNBootSplash
 class MainActivity : ReactActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
+    enableEdgeToEdge()
     RNBootSplash.init(this, R.style.BootTheme)
     super.onCreate(savedInstanceState)
-    enableEdgeToEdge()
   }
 
   /**
