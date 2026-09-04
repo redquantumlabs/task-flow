@@ -1,7 +1,7 @@
 package com.rql.taskflow
 
 import android.os.Bundle
-import androidx.activity.enableEdgeToEdge
+import androidx.core.view.WindowCompat
 import com.facebook.react.ReactActivity
 import com.facebook.react.ReactActivityDelegate
 import com.facebook.react.defaults.DefaultNewArchitectureEntryPoint.fabricEnabled
@@ -11,7 +11,9 @@ import com.zoontek.rnbootsplash.RNBootSplash
 class MainActivity : ReactActivity() {
 
   override fun onCreate(savedInstanceState: Bundle?) {
-    enableEdgeToEdge()
+    // Use WindowCompat instead of enableEdgeToEdge() to avoid deprecated
+    // Window.setStatusBarColor / setNavigationBarColor APIs (Play Console warning fix)
+    WindowCompat.setDecorFitsSystemWindows(window, false)
     RNBootSplash.init(this, R.style.BootTheme)
     super.onCreate(savedInstanceState)
   }

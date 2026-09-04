@@ -2,6 +2,11 @@
     <style name="AppTheme" parent="Theme.AppCompat.DayNight.NoActionBar">
         <!-- Customize your theme here. -->
         <item name="android:editTextBackground">@drawable/rn_edit_text_material</item>
+        <!-- Edge-to-edge: opt in explicitly (required for SDK 35+, resolves Play Console warnings) -->
+        <item name="android:windowOptOutEdgeToEdgeEnforcement">false</item>
+        <!-- Use transparent bars — avoids deprecated Window.setStatusBarColor/setNavigationBarColor APIs -->
+        <item name="android:statusBarColor">@android:color/transparent</item>
+        <item name="android:navigationBarColor">@android:color/transparent</item>
     </style>
 
     <style name="BootTheme" parent="Theme.BootSplash">
