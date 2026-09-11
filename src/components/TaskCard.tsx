@@ -3,6 +3,7 @@ import { StyleSheet, View, TouchableOpacity } from 'react-native';
 import { Card, Text, Checkbox, IconButton, useTheme, Divider } from 'react-native-paper';
 import { format } from 'date-fns';
 import Animated, { FadeInUp, FadeOutDown, Layout, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { Task } from '../types';
 
 interface TaskCardProps {
@@ -22,6 +23,43 @@ const TaskCard: React.FC<TaskCardProps> = ({
 }) => {
   const theme = useTheme();
   const [expanded, setExpanded] = useState(false);
+  const swipeableRef = React.useRef<SwipeableMethods>(null);
+
+  const handleComplete = () => {
+    swipeableRef.current?.close();
+    onToggleComplete(task.id);
+  };
+
+  const handleDelete = () => {
+    swipeableRef.current?.close();
+    onDelete(task.id);
+  };
+
+  const renderLeftActions = () => {
+    return (
+      <View style={[styles.leftAction, { backgroundColor: theme.colors.primary }]}>
+        <IconButton
+          icon={task.isCompleted ? "undo" : "check"}
+          iconColor="white"
+          size={24}
+          onPress={handleComplete}
+        />
+      </View>
+    );
+  };
+
+  const renderRightActions = () => {
+    return (
+      <View style={[styles.rightAction, { backgroundColor: theme.colors.error }]}>
+        <IconButton
+          icon="delete-outline"
+          iconColor="white"
+          size={24}
+          onPress={handleDelete}
+        />
+      </View>
+    );
+  };
 
   const getPriorityColor = () => {
     switch (task.priority) {
@@ -39,18 +77,17 @@ const TaskCard: React.FC<TaskCardProps> = ({
       entering={FadeInUp} 
       exiting={FadeOutDown} 
       layout={Layout.springify()}
+      style={styles.cardContainer}
     >
-      <Card style={[styles.card, { backgroundColor: theme.colors.surface }]} onPress={() => onPress(task)}>
-        <View style={styles.container}>
-          <View style={styles.checkboxContainer}>
-            <Checkbox.Android
-              status={task.isCompleted ? 'checked' : 'unchecked'}
-              onPress={() => onToggleComplete(task.id)}
-              color={theme.colors.primary}
-            />
-          </View>
-
-          <View style={styles.contentContainer}>
+      <Swipeable
+        ref={swipeableRef}
+        renderLeftActions={renderLeftActions}
+        renderRightActions={renderRightActions}
+        friction={2}
+      >
+        <Card style={[styles.card, { backgroundColor: theme.colors.surface }]} onPress={() => onPress(task)}>
+          <View style={styles.container}>
+            <View style={styles.contentContainer}>
             <Text
               variant="titleMedium"
               style={[
@@ -110,14 +147,6 @@ const TaskCard: React.FC<TaskCardProps> = ({
               style={styles.expandButton}
             />
           )}
-
-          <IconButton
-            icon="delete-outline"
-            iconColor={theme.colors.error}
-            size={20}
-            onPress={() => onDelete(task.id)}
-            style={styles.deleteButton}
-          />
         </View>
 
         {/* Subtasks Section */}
@@ -144,22 +173,38 @@ const TaskCard: React.FC<TaskCardProps> = ({
           </View>
         )}
       </Card>
+      </Swipeable>
     </Animated.View>
   );
 };
 
 const styles = StyleSheet.create({
-  card: {
+  cardContainer: {
     marginVertical: 6,
     marginHorizontal: 16,
+  },
+  card: {
+    marginVertical: 0,
+    marginHorizontal: 0,
+  },
+  leftAction: {
+    width: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopLeftRadius: 12,
+    borderBottomLeftRadius: 12,
+  },
+  rightAction: {
+    width: 80,
+    justifyContent: 'center',
+    alignItems: 'center',
+    borderTopRightRadius: 12,
+    borderBottomRightRadius: 12,
   },
   container: {
     flexDirection: 'row',
     alignItems: 'center',
     padding: 12,
-  },
-  checkboxContainer: {
-    marginRight: 8,
   },
   contentContainer: {
     flex: 1,
@@ -193,9 +238,6 @@ const styles = StyleSheet.create({
     color: 'gray',
   },
   expandButton: {
-    margin: 0,
-  },
-  deleteButton: {
     margin: 0,
   },
   subtasksContainer: {

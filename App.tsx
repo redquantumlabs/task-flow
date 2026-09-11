@@ -7,6 +7,7 @@ import RootNavigator from './src/navigation/RootNavigator';
 import { TaskProvider } from './src/context/TaskContext';
 import { ThemeProvider, useAppTheme } from './src/context/ThemeContext';
 import BootSplash from 'react-native-bootsplash';
+import { GestureHandlerRootView } from 'react-native-gesture-handler';
 
 const MainApp = () => {
   const { theme, isDarkMode } = useAppTheme();
@@ -27,11 +28,13 @@ const MainApp = () => {
 
 const App = () => {
   return (
-    <SafeAreaProvider>
-      <ThemeProvider>
-        <MainApp />
-      </ThemeProvider>
-    </SafeAreaProvider>
+    <GestureHandlerRootView style={{ flex: 1 }}>
+      <SafeAreaProvider>
+        <ThemeProvider>
+          <MainApp />
+        </ThemeProvider>
+      </SafeAreaProvider>
+    </GestureHandlerRootView>
   );
 };
 
