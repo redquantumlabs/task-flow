@@ -1,6 +1,6 @@
 import React, { useState } from 'react';
-import { StyleSheet, View, TouchableOpacity } from 'react-native';
-import { Card, Text, Checkbox, IconButton, useTheme, Divider } from 'react-native-paper';
+import { StyleSheet, View, Pressable, Platform } from 'react-native';
+import { Text, Checkbox, IconButton, useTheme, Divider } from 'react-native-paper';
 import { format } from 'date-fns';
 import Animated, { FadeInUp, FadeOutDown, Layout, useAnimatedStyle, withTiming } from 'react-native-reanimated';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -73,9 +73,9 @@ const TaskCard: React.FC<TaskCardProps> = ({
   const hasSubtasks = task.subtasks && task.subtasks.length > 0;
 
   return (
-    <Animated.View 
-      entering={FadeInUp} 
-      exiting={FadeOutDown} 
+    <Animated.View
+      entering={FadeInUp}
+      exiting={FadeOutDown}
       layout={Layout.springify()}
       style={styles.cardContainer}
     >
@@ -84,95 +84,103 @@ const TaskCard: React.FC<TaskCardProps> = ({
         renderLeftActions={renderLeftActions}
         renderRightActions={renderRightActions}
         friction={2}
+        containerStyle={styles.swipeableContainer}
       >
-        <Card style={[styles.card, { backgroundColor: theme.colors.surface }]} onPress={() => onPress(task)}>
+        <Pressable
+          style={({ pressed }) => [
+            styles.card,
+            { backgroundColor: theme.colors.surface },
+            pressed && { opacity: 0.9 }
+          ]}
+          onPress={() => onPress(task)}
+        >
           <View style={styles.container}>
             <View style={styles.contentContainer}>
-            <Text
-              variant="titleMedium"
-              style={[
-                styles.title,
-                task.isCompleted && styles.completedText,
-              ]}
-            >
-              {task.title}
-            </Text>
-
-            <View style={styles.footer}>
-              <View
+              <Text
+                variant="titleMedium"
                 style={[
-                  styles.badge,
-                  { backgroundColor: getPriorityColor() + '20' },
+                  styles.title,
+                  task.isCompleted && styles.completedText,
                 ]}
               >
-                <Text style={[styles.badgeText, { color: getPriorityColor() }]}>
-                  {task.priority.toUpperCase()}
-                </Text>
-              </View>
+                {task.title}
+              </Text>
 
-              {task.category && (
+              <View style={styles.footer}>
                 <View
                   style={[
                     styles.badge,
-                    { backgroundColor: theme.colors.primaryContainer },
+                    { backgroundColor: getPriorityColor() + '20' },
                   ]}
                 >
-                  <Text style={[styles.badgeText, { color: theme.colors.onPrimaryContainer }]}>
-                    {task.category}
+                  <Text style={[styles.badgeText, { color: getPriorityColor() }]}>
+                    {task.priority.toUpperCase()}
                   </Text>
                 </View>
-              )}
 
-              {task.dueDate && (
-                <Text style={styles.dateText}>
-                  {(() => {
-                    if (task.selectedDays && task.selectedDays.length > 0) {
-                      return `${task.selectedDays.length} days/wk, ${format(new Date(task.dueDate), 'hh:mm a')}`;
-                    }
-                    if (task.isDaily) {
-                      return `Daily, ${format(new Date(task.dueDate), 'hh:mm a')}`;
-                    }
-                    return format(new Date(task.dueDate), 'MMM dd');
-                  })()}
-                </Text>
-              )}
-            </View>
-          </View>
+                {task.category && (
+                  <View
+                    style={[
+                      styles.badge,
+                      { backgroundColor: theme.colors.primaryContainer },
+                    ]}
+                  >
+                    <Text style={[styles.badgeText, { color: theme.colors.onPrimaryContainer }]}>
+                      {task.category}
+                    </Text>
+                  </View>
+                )}
 
-          {hasSubtasks && (
-            <IconButton
-              icon={expanded ? "chevron-up" : "chevron-down"}
-              size={24}
-              onPress={() => setExpanded(!expanded)}
-              style={styles.expandButton}
-            />
-          )}
-        </View>
-
-        {/* Subtasks Section */}
-        {expanded && hasSubtasks && (
-          <View style={styles.subtasksContainer}>
-            <Divider style={styles.divider} />
-            {task.subtasks!.map((subtask) => (
-              <View key={subtask.id} style={styles.subtaskRow}>
-                <Checkbox.Android
-                  status={subtask.completed ? 'checked' : 'unchecked'}
-                  onPress={() => onToggleSubtaskComplete && onToggleSubtaskComplete(task.id, subtask.id)}
-                  color={theme.colors.primary}
-                />
-                <Text
-                  style={[
-                    styles.subtaskTitle,
-                    subtask.completed && styles.completedText,
-                  ]}
-                >
-                  {subtask.title}
-                </Text>
+                {task.dueDate && (
+                  <Text style={styles.dateText}>
+                    {(() => {
+                      if (task.selectedDays && task.selectedDays.length > 0) {
+                        return `${task.selectedDays.length} days/wk, ${format(new Date(task.dueDate), 'hh:mm a')}`;
+                      }
+                      if (task.isDaily) {
+                        return `Daily, ${format(new Date(task.dueDate), 'hh:mm a')}`;
+                      }
+                      return format(new Date(task.dueDate), 'MMM dd');
+                    })()}
+                  </Text>
+                )}
               </View>
-            ))}
+            </View>
+
+            {hasSubtasks && (
+              <IconButton
+                icon={expanded ? "chevron-up" : "chevron-down"}
+                size={24}
+                onPress={() => setExpanded(!expanded)}
+                style={styles.expandButton}
+              />
+            )}
           </View>
-        )}
-      </Card>
+
+          {/* Subtasks Section */}
+          {expanded && hasSubtasks && (
+            <View style={styles.subtasksContainer}>
+              <Divider style={styles.divider} />
+              {task.subtasks!.map((subtask) => (
+                <View key={subtask.id} style={styles.subtaskRow}>
+                  <Checkbox.Android
+                    status={subtask.completed ? 'checked' : 'unchecked'}
+                    onPress={() => onToggleSubtaskComplete && onToggleSubtaskComplete(task.id, subtask.id)}
+                    color={theme.colors.primary}
+                  />
+                  <Text
+                    style={[
+                      styles.subtaskTitle,
+                      subtask.completed && styles.completedText,
+                    ]}
+                  >
+                    {subtask.title}
+                  </Text>
+                </View>
+              ))}
+            </View>
+          )}
+        </Pressable>
       </Swipeable>
     </Animated.View>
   );
@@ -182,24 +190,32 @@ const styles = StyleSheet.create({
   cardContainer: {
     marginVertical: 6,
     marginHorizontal: 16,
+    borderRadius: 16,
+    shadowColor: '#000',
+    shadowOffset: { width: 0, height: 2 },
+    shadowOpacity: 0.1,
+    shadowRadius: 4,
+    elevation: 3,
+    backgroundColor: 'transparent',
+  },
+  swipeableContainer: {
+    borderRadius: 16,
+    overflow: 'hidden',
   },
   card: {
-    marginVertical: 0,
-    marginHorizontal: 0,
+    borderRadius: 16,
+    borderWidth: 1,
+    borderColor: 'rgba(0,0,0,0.05)',
   },
   leftAction: {
     width: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopLeftRadius: 12,
-    borderBottomLeftRadius: 12,
   },
   rightAction: {
     width: 80,
     justifyContent: 'center',
     alignItems: 'center',
-    borderTopRightRadius: 12,
-    borderBottomRightRadius: 12,
   },
   container: {
     flexDirection: 'row',
