@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import { StyleSheet, View, Pressable, Platform } from 'react-native';
 import { Text, Checkbox, IconButton, useTheme, Divider } from 'react-native-paper';
 import { format } from 'date-fns';
-import Animated, { FadeInUp, FadeOutDown, Layout, useAnimatedStyle, withTiming } from 'react-native-reanimated';
+import Animated, { FadeInUp, FadeOutDown, Layout, useAnimatedStyle, withTiming, SharedValue } from 'react-native-reanimated';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
 import { Task } from '../types';
 
@@ -35,29 +35,37 @@ const TaskCard: React.FC<TaskCardProps> = ({
     onDelete(task.id);
   };
 
-  const renderLeftActions = () => {
+  const renderLeftActions = (progress: SharedValue<number>, translation: SharedValue<number>) => {
+    const animatedStyle = useAnimatedStyle(() => ({
+      opacity: progress.value,
+    }));
+
     return (
-      <View style={[styles.leftAction, { backgroundColor: theme.colors.primary }]}>
+      <Animated.View style={[styles.leftAction, { backgroundColor: theme.colors.primary }, animatedStyle]}>
         <IconButton
           icon={task.isCompleted ? "undo" : "check"}
           iconColor="white"
           size={24}
           onPress={handleComplete}
         />
-      </View>
+      </Animated.View>
     );
   };
 
-  const renderRightActions = () => {
+  const renderRightActions = (progress: SharedValue<number>, translation: SharedValue<number>) => {
+    const animatedStyle = useAnimatedStyle(() => ({
+      opacity: progress.value,
+    }));
+
     return (
-      <View style={[styles.rightAction, { backgroundColor: theme.colors.error }]}>
+      <Animated.View style={[styles.rightAction, { backgroundColor: theme.colors.error }, animatedStyle]}>
         <IconButton
           icon="delete-outline"
           iconColor="white"
           size={24}
           onPress={handleDelete}
         />
-      </View>
+      </Animated.View>
     );
   };
 
