@@ -2,7 +2,12 @@ import React, { createContext, useState, useEffect, ReactNode, useContext } from
 import { Task } from '../types';
 import { loadTasks, saveTasks } from '../storage';
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { scheduleTaskReminder, cancelTaskReminder, requestNotificationPermission } from '../services/notificationService';
+import {
+  scheduleTaskReminder,
+  cancelTaskReminder,
+  requestNotificationPermission,
+  syncAllTaskReminders,
+} from '../services/notificationService';
 
 interface TaskContextType {
   tasks: Task[];
@@ -38,6 +43,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
       await requestNotificationPermission();
       const storedTasks = await loadTasks();
       setTasks(storedTasks);
+      await syncAllTaskReminders(storedTasks);
 
       const todayStr = new Date().toISOString().split('T')[0];
       const storedDate = await AsyncStorage.getItem('lastActiveDate');
@@ -177,6 +183,7 @@ export const TaskProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
   };
 
   const clearAllTasks = () => {
+    tasks.forEach((t) => cancelTaskReminder(t.id));
     setTasks([]);
   };
 

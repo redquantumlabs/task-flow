@@ -7,6 +7,7 @@ import { useTasks } from '../../context/TaskContext';
 import { useAppTheme } from '../../context/ThemeContext';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 import CustomButton from '../../components/CustomButton';
+import { requestNotificationPermission, openBatteryOptimizationSettings } from '../../services/notificationService';
 
 const SettingsScreen = () => {
   const theme = useTheme();
@@ -50,6 +51,22 @@ const SettingsScreen = () => {
                 color={theme.colors.primary}
               />
             )}
+          />
+        </List.Section>
+
+        <Divider />
+
+        <List.Section style={[styles.section, { backgroundColor: theme.colors.surface }]}>
+          <List.Subheader>Notifications & Reminders</List.Subheader>
+          <List.Item
+            title="Alarm & Battery Settings"
+            description="Grant exact alarm & unrestricted battery access"
+            left={(props) => <List.Icon {...props} icon="bell-ring-outline" />}
+            right={(props) => <List.Icon {...props} icon="chevron-right" />}
+            onPress={async () => {
+              await requestNotificationPermission();
+              await openBatteryOptimizationSettings();
+            }}
           />
         </List.Section>
 
