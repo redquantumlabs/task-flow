@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
 import { StyleSheet, View, Pressable, Platform } from 'react-native';
 import { Text, Checkbox, IconButton, useTheme, Divider } from 'react-native-paper';
+import Icon from 'react-native-vector-icons/MaterialCommunityIcons';
 import { format } from 'date-fns';
 import Animated, { FadeInUp, FadeOutDown, Layout, useAnimatedStyle, withTiming, SharedValue } from 'react-native-reanimated';
 import Swipeable, { SwipeableMethods } from 'react-native-gesture-handler/ReanimatedSwipeable';
@@ -78,7 +79,12 @@ const TaskCard: React.FC<TaskCardProps> = ({
     }
   };
 
-  const hasSubtasks = task.subtasks && task.subtasks.length > 0;
+  const totalSubtasks = task.subtasks ? task.subtasks.length : 0;
+  const completedSubtasks = task.subtasks
+    ? task.subtasks.filter((s) => s.completed).length
+    : 0;
+  const hasSubtasks = totalSubtasks > 0;
+  const allSubtasksDone = hasSubtasks && completedSubtasks === totalSubtasks;
 
   return (
     <Animated.View
@@ -137,6 +143,45 @@ const TaskCard: React.FC<TaskCardProps> = ({
                       {task.category}
                     </Text>
                   </View>
+                )}
+
+                {hasSubtasks && (
+                  <Pressable
+                    onPress={() => setExpanded(!expanded)}
+                    style={({ pressed }) => [
+                      styles.badge,
+                      styles.subtaskBadge,
+                      {
+                        backgroundColor: allSubtasksDone
+                          ? '#4CAF5020'
+                          : theme.colors.surfaceVariant,
+                        opacity: pressed ? 0.7 : 1,
+                      },
+                    ]}
+                  >
+                    <Icon
+                      name="checkbox-marked-circle-outline"
+                      size={12}
+                      color={
+                        allSubtasksDone
+                          ? '#4CAF50'
+                          : theme.colors.onSurfaceVariant
+                      }
+                      style={styles.subtaskIcon}
+                    />
+                    <Text
+                      style={[
+                        styles.badgeText,
+                        {
+                          color: allSubtasksDone
+                            ? '#4CAF50'
+                            : theme.colors.onSurfaceVariant,
+                        },
+                      ]}
+                    >
+                      {`${completedSubtasks}/${totalSubtasks}`}
+                    </Text>
+                  </Pressable>
                 )}
 
                 {task.dueDate && (
@@ -252,6 +297,13 @@ const styles = StyleSheet.create({
     paddingHorizontal: 6,
     paddingVertical: 2,
     borderRadius: 4,
+  },
+  subtaskBadge: {
+    flexDirection: 'row',
+    alignItems: 'center',
+  },
+  subtaskIcon: {
+    marginRight: 4,
   },
   badgeText: {
     fontSize: 10,

@@ -125,7 +125,9 @@ const TaskDetailsScreen = () => {
 
           {task.subtasks && task.subtasks.length > 0 && (
             <View style={[styles.subtasksSection, { borderTopColor: theme.colors.outline }]}>
-              <Text variant="titleMedium" style={styles.subtasksHeader}>Subtasks</Text>
+              <Text variant="titleMedium" style={styles.subtasksHeader}>
+                {`Subtasks (${task.subtasks.filter((s) => s.completed).length}/${task.subtasks.length})`}
+              </Text>
               {task.subtasks.map((subtask) => (
                 <View key={subtask.id} style={styles.subtaskRow}>
                   <Checkbox.Android
